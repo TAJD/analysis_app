@@ -42,27 +42,23 @@ def load_data(data_path):
     return dfs
 
 
-def process_ensemble_results(dfs):
-    """Return a dataframe which contains the mean and standard deviation of each ensemble for each performance."""
-    dates = dfs[0].index
-    no_ensembles = len(list(dfs[0]))
-    means = np.empty((len(dates), no_ensembles))
-    print(means)
-    for i, d in enumerate(dfs):
-        times = d.values
-        for j in d.index:
-            means[j, i] = np.mean(times[j, :])
-        # print(np.mean(d.values))
-    print(means)
+def return_df_stats(i, df):
+    """Return a dataframe of the mean and std of a dataframe"""
+    dates = df.index
+    mean = df.mean(axis=1)
+    std = df.std(axis=1)
+    df = pd.concat([mean, std], axis=1)
+    df.columns = [str(i)+ "_mean", str(i)+ "_std"]
+    return df
 
 
 if __name__ == "__main__":
     dfs = load_data(data_folder_path)
-    dates = dfs[0].index
-    vals = dfs[0].values
-    dfs_0_mean = dfs[0].mean(axis=1)
-    dfs_0_std = dfs[0].std(axis=1)
-    print(dfs_0_std)
+    dfs_processed = [return_df_stats(i, df) for i, df in enumerate(dfs)]
+    print(dfs_processed)
+    good_indices = [1]
+    property_asel = [dfs_processed[i] for i in good_indices]
+    print(property_asel)
 
     # no_ensembles = len(list(dfs[0]))
     # means = np.empty((len(dates), no_ensembles))
