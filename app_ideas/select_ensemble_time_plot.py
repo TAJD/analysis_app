@@ -58,8 +58,14 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
+markdown_text = '''
+### Ensemble voyaging time plotting tool
+
+A simple tool for plotting voyaging time as a function of ensemble and start date.
+'''
 
 app.layout = html.Div([
+    dcc.Markdown(children=markdown_text),
     dcc.Graph(id='ensemble-voyaging-time-plot'),
     dcc.Dropdown(
         id='ensemble-selection',
@@ -77,11 +83,11 @@ def update_figure(ensembles):
     ensembles = list(map(int, ensembles))
     filtered_df = [dfs_processed[i] for i in ensembles]
     traces = []
-    for i in range(len(filtered_df)):
+    for i, df in enumerate(filtered_df): # re-write using enumerate
         traces.append(go.Scatter(
-            x=filtered_df[i].index,
-            y=filtered_df[i]["mean"],
-            error_y=dict(type='data', array=filtered_df[i]["std"], visible=True),
+            x=df.index,
+            y=df["mean"],
+            error_y=dict(type='data', array=df["std"], visible=True),
             mode='markers',
             opacity=0.7,
             marker={
