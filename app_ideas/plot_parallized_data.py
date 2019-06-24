@@ -5,7 +5,7 @@ thomas.dickson@soton.ac.uk
 16/03/2019
 """
 
-from mpl_toolkits.basemap import Basemap
+# from mpl_toolkits.basemap import Basemap
 from os import listdir
 import re, dash, h5py
 import plotly.graph_objs as go
@@ -17,7 +17,12 @@ import matplotlib.pyplot as plt
 from dash.dependencies import Input, Output
 from datetime import datetime
 
-data_path = "/home/thomas/iridis/sail_route_old/development/polynesian/ensemble_testing/trial_results/"
+from tkinter import Tk
+from tkinter.filedialog import askopenfilename
+
+# Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+# filename = askopenfilename() # show an "Open" dialog box and return the path to the selected file
+# print(filename)
 
 
 def tryint(s):
@@ -56,8 +61,7 @@ def return_data_arrays(h5_file):
     return et_results, start_times, journey_times, x_results, y_results, x_locations, y_locations
 
 
-loaded_h5 = load_data(data_path)
-et_results, start_times, journey_times, x_results, y_results, x_locations, y_locations = return_data_arrays(loaded_h5[0])
+# loaded_h5 = load_data(filename)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -69,32 +73,32 @@ markdown_text = '''
 Tool to plot voyaging times and routes.
 '''
 
-app.layout = html.Div([
-    dcc.Markdown(children=markdown_text),
-    dcc.Graph(
-        id='basic-interactions',
-        figure={
-            'data': [
-                {
-                    'x': start_times,
-                    'y': journey_times,
-                    'name': 'Voyaging time',
-                    'mode': 'markers',
-                    'marker': {'size': 12}
-                },
-            ],
-            'layout': {
-                'clickmode': 'event+select'
-            }
-        }
-    ),
-    # dcc.Dropdown(
-    #     id='ensemble-selection',
-    #     options=[{'label': "Ensemble "+str(i), 'value':str(i)} for i in range(0, len(dfs))],
-    #     value=[i for i in range(0, len(dfs))],
-    #     multi=True
-    # )
-])
+# app.layout = html.Div([
+#     dcc.Markdown(children=markdown_text),
+#     dcc.Graph(
+#         id='basic-interactions',
+#         figure={
+#             'data': [
+#                 {
+#                     'x': start_times,
+#                     'y': journey_times,
+#                     'name': 'Voyaging time',
+#                     'mode': 'markers',
+#                     'marker': {'size': 12}
+#                 },
+#             ],
+#             'layout': {
+#                 'clickmode': 'event+select'
+#             }
+#         }
+#     ),
+#     # dcc.Dropdown(
+#     #     id='ensemble-selection',
+#     #     options=[{'label': "Ensemble "+str(i), 'value':str(i)} for i in range(0, len(dfs))],
+#     #     value=[i for i in range(0, len(dfs))],
+#     #     multi=True
+#     # )
+# ])
 
 
 # @app.callback(
@@ -131,4 +135,32 @@ app.layout = html.Div([
 
 
 if __name__ == '__main__':
+    h5_file = h5py.File(filename, 'r')
+    et_results, start_times, journey_times, x_results, y_results, x_locations, y_locations = return_data_arrays(h5_file)
+    app.layout = html.Div([
+        dcc.Markdown(children=markdown_text),
+        dcc.Graph(
+            id='basic-interactions',
+            figure={
+                'data': [
+                    {
+                        'x': start_times,
+                        'y': journey_times,
+                        'name': 'Voyaging time',
+                        'mode': 'markers',
+                        'marker': {'size': 12}
+                    },
+                ],
+                'layout': {
+                    'clickmode': 'event+select'
+                }
+            }
+        ),
+        # dcc.Dropdown(
+        #     id='ensemble-selection',
+        #     options=[{'label': "Ensemble "+str(i), 'value':str(i)} for i in range(0, len(dfs))],
+        #     value=[i for i in range(0, len(dfs))],
+        #     multi=True
+        # )
+    ])
     app.run_server(debug=True)
