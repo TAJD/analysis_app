@@ -1,5 +1,7 @@
+import os, re, glob
+
 from os import listdir
-import re, dash, h5py, glob
+import dash, h5py, plotly
 import plotly.graph_objs as go
 import dash_core_components as dcc
 import dash_html_components as html
@@ -39,8 +41,6 @@ def load_file():
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     filename = askopenfilename() # show an "Open" dialog box and return the path to the selected file
     return filename
-    # f = h5py.File(filename, 'r')
-    # return f
 
 
 def tryint(s):
@@ -72,7 +72,6 @@ def plot_single_route(start_times, journey_times):
     ax.xaxis.set_major_formatter(monthsFmt)
     ax.xaxis.set_minor_locator(days)
     ax.set_xlim(start_times.min(), start_times.max())
-    
     for i in range(journey_times.shape[0]):
         ax.plot(start_times, journey_times[i, :], label="Perf {0}".format(i))
     ax.format_xdata = mdates.DateFormatter('%Y-%m-%d')
@@ -86,8 +85,6 @@ def plot_single_file():
     h5_file = h5py.File(h5_file, 'r') 
     et_results, start_times, journey_times, x_results, y_results, x_locations, y_locations = return_data_arrays(h5_file)
     plot_single_route(start_times, journey_times)
-
-
 
 
 def plot_ensemble():

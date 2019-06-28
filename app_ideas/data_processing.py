@@ -5,18 +5,12 @@ thomas.dickson@soton.ac.uk
 15/03/2019
 """
 
-from mpl_toolkits.basemap import Basemap
 from os import listdir
 import datetime, re, dash
-import plotly.graph_objs as go
 import dash_core_components as dcc
 import dash_html_components as html
 from os.path import isfile, join
 import numpy as np, pandas as pd
-import matplotlib.pyplot as plt
-
-
-data_folder_path = "/home/thomas/iridis/sail_route_old/development/polynesian/ensemble_testing/sample_folder/"
 
 
 def tryint(s):
